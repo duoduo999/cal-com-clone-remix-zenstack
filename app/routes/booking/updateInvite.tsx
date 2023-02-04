@@ -11,6 +11,7 @@ export async function action({ request }: ActionArgs) {
 
   try {
     await updateInvite({
+      userId,
       bookingId,
       inviteUserId,
       add,
