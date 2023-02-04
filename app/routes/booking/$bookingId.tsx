@@ -1,10 +1,13 @@
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Form, useCatch, useFetcher, useLoaderData } from "@remix-run/react";
+import { Form, useFetcher, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
-import { deleteBooking, getBooking } from "~/models/booking.server";
+import {
+  deleteBooking,
+  getBooking,
+  updateInvite,
+} from "~/models/booking.server";
 import { getUsers } from "~/models/user.server";
-
 import { requireUserId } from "~/session.server";
 
 export async function loader({ request, params }: LoaderArgs) {
@@ -21,13 +24,39 @@ export async function loader({ request, params }: LoaderArgs) {
   return json({ booking, users });
 }
 
-export async function action({ request, params }: ActionArgs) {
+async function updateInviteAction({ request }: ActionArgs) {
+  const userId = await requireUserId(request);
+  const formData = await request.formData();
+  const bookingId = formData.get("bookingId") as string;
+  const inviteUserId = formData.get("inviteUserId") as string;
+  const add = formData.get("add") === "true";
+
+  try {
+    await updateInvite({
+      userId,
+      bookingId,
+      inviteUserId,
+      add,
+    });
+    return json({ error: null, ok: true });
+  } catch (error: any) {
+    return json({ error: error.message, ok: false });
+  }
+}
+
+async function deleteAction({ request, params }: ActionArgs) {
   const userId = await requireUserId(request);
   invariant(params.bookingId, "bookingId not found");
-
   await deleteBooking({ userId, id: params.bookingId });
-
   return redirect("/booking");
+}
+
+export async function action(args: ActionArgs) {
+  if (args.request.method === "POST") {
+    return updateInviteAction(args);
+  } else if (args.request.method === "DELETE") {
+    return deleteAction(args);
+  }
 }
 
 export default function BookingDetailsPage() {
@@ -41,7 +70,7 @@ export default function BookingDetailsPage() {
         inviteUserId,
         add: add.toString(),
       },
-      { method: "post", action: "/booking/updateInvite" }
+      { method: "post" }
     );
   }
 
@@ -66,7 +95,6 @@ export default function BookingDetailsPage() {
           <p>{data.booking.notes}</p>
         </div>
         <div>
-          {}
           <p className="font-semibold">Invited Members</p>
 
           <div className="flex flex-col gap-1">
@@ -91,7 +119,7 @@ export default function BookingDetailsPage() {
         </div>
       </div>
       <hr className="my-4" />
-      <Form method="post">
+      <Form method="delete">
         <button
           type="submit"
           className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
@@ -101,20 +129,4 @@ export default function BookingDetailsPage() {
       </Form>
     </div>
   );
-}
-
-export function ErrorBoundary({ error }: { error: Error }) {
-  console.error(error);
-
-  return <div>An unexpected error occurred: {error.message}</div>;
-}
-
-export function CatchBoundary() {
-  const caught = useCatch();
-
-  if (caught.status === 404) {
-    return <div>Booking not found</div>;
-  }
-
-  throw new Error(`Unexpected caught response with status: ${caught.status}`);
 }

@@ -1,7 +1,5 @@
 import type { Booking, User } from "@prisma/client";
-
 import { getEnhancedPrisma } from "~/db.server";
-
 export type { Booking } from "@prisma/client";
 
 export function getBooking({

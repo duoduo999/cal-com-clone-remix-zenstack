@@ -3,7 +3,6 @@ import { json } from "@remix-run/node";
 import { Form, Link, NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { getBookingItems } from "~/models/booking.server";
-
 import type { User } from "~/models/user.server";
 import { requireUserId } from "~/session.server";
 import { useUser } from "~/utils";
