@@ -1,4 +1,4 @@
-app = "event-scheduler-remix-4be1"
+app = "cal-com-clone-remix-zenstack"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = [ ]
