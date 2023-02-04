@@ -33,7 +33,7 @@
     "@remix-run/react": "^1.12.0",
     "@remix-run/serve": "^1.12.0",
     "@remix-run/server-runtime": "^1.12.0",
-    "@zenstackhq/runtime": "^1.0.0-alpha.31",
+    "@zenstackhq/runtime": "^1.0.0-alpha.32",
     "bcryptjs": "^2.4.3",
     "isbot": "^3.6.5",
     "react": "^18.2.0",
@@ -82,7 +82,7 @@
     "vite": "^4.0.4",
     "vite-tsconfig-paths": "^3.6.0",
     "vitest": "^0.27.2",
-    "zenstack": "^1.0.0-alpha.31"
+    "zenstack": "^1.0.0-alpha.32"
   },
   "engines": {
     "node": ">=14"
