@@ -1,6 +1,6 @@
 import type { Booking, User } from "@prisma/client";
 
-import { getEnhancedPrisma, prisma } from "~/db.server";
+import { getEnhancedPrisma } from "~/db.server";
 
 export type { Booking } from "@prisma/client";
 
